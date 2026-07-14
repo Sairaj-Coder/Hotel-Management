@@ -66,7 +66,7 @@ app.get("/listing",async (req,res)=>{
     const data = await listing.find();
     if(data){
         console.log("Hello done")
-    res.render("listing/index.ejs",{data});
+    res.render("listing/home.ejs",{data});
     }
     else{
         res.send("No data found");
@@ -80,7 +80,7 @@ app.get("/listing/add",(req,res)=>{
 })
 
 app.post("/listing",async (req,res)=>{
-    
+    //we can convert html data into object also by giving brackets
     let data = req.body;
     console.log(data);
     await listing.insertOne(data)
@@ -89,10 +89,34 @@ app.post("/listing",async (req,res)=>{
     res.redirect("/listing");
 })
 
+//update
+app.get("/listing/:id/edit",async(req,res)=>{
+    let {id}=req.params;
+    let data = await listing.findById(id);
+    res.render("listing/update",{data});
+    console.log(data);
+
+})
+app.patch("/listing/:id",async(req,res)=>{
+    let {id}=req.params;
+    let data=req.body;
+    console.log(data);
+    await listing.findByIdAndUpdate(id,data);
+    res.redirect(`/listing/${id}`);
+
+})
 
 
 
-//Read Specific data 
+
+
+
+
+
+
+
+//Read Specific data =>this is written at the end because this route will
+//detect anything incoming as id any route
 //
 app.get("/listing/:id",async(req,res)=>{
     let {id}=req.params;
@@ -101,4 +125,10 @@ app.get("/listing/:id",async(req,res)=>{
 })
 
 //create / adding new data
+//delete
+app.delete("/listing/:id/Delete",async(req,res)=>{
+    let {id}=req.params;
+    await listing.findByIdAndDelete(id);
+    res.redirect(`/listing`);
+})
 
