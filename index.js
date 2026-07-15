@@ -8,11 +8,23 @@ const ejs = require("ejs");
 const mongoose = require('mongoose');//download
 const path= require("path");
 
+//requiring ejs-mate
+const ejsmate = require('ejs-mate');
+
 //overriding method of form action
 const methodoverride = require('method-override');//download this package
 app.use(methodoverride('_method'));
 
 //npm list --depth=0 ==>it tells us number of packages install
+
+
+//serving static file 
+// app.use(express.static(path.join(__dirname,"/public/css")));
+// app.use(express.static(path.join(__dirname,"/public/js")));
+//serving entire folder
+app.use(express.static(path.join(__dirname, "public")));
+
+
 
 
 //port is set
@@ -24,6 +36,11 @@ const listing = require("./models/listing.js")
 //setting view engine on absolute path
 app.set("views",path.join(__dirname,"/views"));
 app.set("view engine","ejs");
+//setting engine
+app.engine('ejs',ejsmate);
+
+
+
 
 //starting mongo db server
 main().then(()=>{
@@ -82,7 +99,7 @@ app.get("/listing/add",(req,res)=>{
 app.post("/listing",async (req,res)=>{
     //we can convert html data into object also by giving brackets
     let data = req.body;
-    console.log(data);
+    // console.log(data);
     await listing.insertOne(data)
 
 

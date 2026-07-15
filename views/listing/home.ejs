@@ -1,25 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listing</title>
-</head>
+<% layout("/layouts/boilerplate") %>
 <body>
     <% for(datas of data){ %>
     <h2>Title: <%= datas.title %></h2>
     <a href="listing/<%= datas.id %>">Click here See more details</a>
+    <a href="listing"></a>
 <% } %>
 
     <br><br>
     <div>
-        <form action="/listing/add" method="get">
+        <!-- <form action="/listing/add" method="get">
             <button type="submit">Add New Place</button>
-        </form>
-
-
-
+        </form> -->
     </div>
+    
 
 </body>
-</html>
