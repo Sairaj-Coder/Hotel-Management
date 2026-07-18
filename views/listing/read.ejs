@@ -1,21 +1,28 @@
-
 <% layout("/layouts/boilerplate") %>
-<body>
-    <!--<%=data._id%> -->
-    <h1>Title: <%=data.title%> </h1>
-    <h3>Description: <%= data.description %></h3>
-    <h3>Price: &#8377; <%= data.price.toLocaleString("en-IN")    %>     </h3>
-    <h3>Location: <%= data.location %> </h3>
-    <h3>country:   <%= data.country  %>   </h3>
-   
-    <h3><a href="/listing/<%= data._id  %>/edit">Edit</a></h3>
 
-    <form method="post" action="/listing/<%=data._id %>/Delete?_method=delete">
-        <button type="submit">Delete</button>
-    </form>
-    <br>
+    <body>
+        <div class="center">
+        <div class="card " style="border-radius: 0%; border-color: white;">
+            <img src="<%= data.image %>" alt="Place Image" class="img-fluid">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <%=data.title%>
+                </h5>
+                <p class="card-text">
+                    <%= data.description %> <br>
+                        &#8377; <%= data.price.toLocaleString("en-IN") %> <br>
+                            <%= data.location %> <br>
+                                <%= data.country %> <br>
+                                    <form method="post" action="/listing/<%=data._id %>/Delete?_method=delete">
+                                        <a href="/listing/<%= data._id  %>/edit" class="btn btn-danger">Edit</a>
+                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                        
+                                    </form>
+                </p>
+            </div>
 
-    <img src="<%= data.image %>" alt="Place image" width="300px" >
-    
 
-</body>
+
+        </div>
+        </div>
+    </body>

@@ -1,5 +1,5 @@
 body {
-    font-family: "Plus Jakarta Sans", sans-serif !important  ;
+    font-family: "Plus Jakarta Sans", sans-serif !important;
     font-optical-sizing: auto !important;
     font-style: normal !important;
     display: flex !important;
@@ -7,9 +7,11 @@ body {
     min-height: 100vh !important;
 
 }
-.container{
+
+.container {
     flex: 1;
 }
+
 .navbar {
     height: 5rem;
 }
@@ -33,7 +35,7 @@ body {
     /* bottom: 0%; */
     /* width: 100%; */
     /* border-top-left-radius:15% ;
-    /* border-top-right-radius:15% ; */ 
+    /* border-top-right-radius:15% ; */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -69,7 +71,7 @@ body {
 
 .card {
     margin-top: 5% !important;
-   
+
     border-radius: 1rem !important;
 }
 
@@ -77,12 +79,29 @@ body {
     height: 18rem !important;
     border-radius: 1rem !important;
 }
-.anchor{
+
+.anchor {
     text-decoration: none;
 }
-.card-img-top{
+
+.card-img-top {
     opacity: 1;
 }
-.card-img-top:hover{
+
+.card-img-top:hover {
     opacity: 0.8;
+}
+
+.img-fluid {
+    border-radius: 1.2%;
+    height: fit-content;
+    width: fit-content;
+
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    /* Centers horizontally */
+    align-content: center;
 }
