@@ -6,16 +6,29 @@ const listingSchema = new schema({
         type:String,
         required:true,
     },
-    description:String,
-    image:{
-        
+    description:{ 
+        type:String,
+        required:true,
+    },
+    image:{  
         type: String,
         default:link,
         set:(v)=>v===""? link : v ,
     },
-    price:Number,
-    location:String,
-    country:String
+    price:{
+        type:Number,
+        required:true,
+
+    },
+    location:{
+        type:String,
+        required:true,
+    },
+
+    country:{
+        type:String,
+        required:true,
+    },
 });
 
 const listing  = mongoose.model("listing", listingSchema );

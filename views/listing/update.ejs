@@ -1,37 +1,74 @@
-
 <% layout("/layouts/boilerplate") %>
-<body>
-   
 
-    <form method="post" action="/listing/<%=data._id %>?_method=patch">
-         <div class="mb-3">
-        <label for="title" class="form-label">Edit title:</label>
-        <textarea name="title" id="title" class="form-control"><%=data.title %></textarea>
-        </div>
-         <div class="mb-3">
-        <label for="description" class="form-label">Edit description:</label>
-        <textarea name="description" id="description" class="form-control"><%=data.description %></textarea>
-        </div> 
-        
-        <div class="mb-3">
-        <label for="image" class="form-label">Edit url:</label>
-        <textarea name="image" id="image" class="form-control"><%=data.image %></textarea>
-        </div>
-         <div class="mb-3">
-        <label for="price" class="form-label">Edit price</label>
-        <textarea name="price" id="price" class="form-control"><%=data.price %></textarea>
-        </div>
-         <div class="mb-3">
-        <label for="location" class="form-label">Edit location:</label>
-        <textarea name="location" id="location" class="form-control"><%=data.location %></textarea>
-        </div>
-         <div class="mb-3">
-        <label for="country" class="form-label">Edit country:</label>
-        <textarea name="country" id="country" class="form-control"><%=data.country %></textarea>
-        </div>
-         <div class="mb-3">
-        <button type="submit"   class="btn btn-warning">Submit</button>
-        </div>
+    <body>
 
-    </form>
-</body>
+
+        <form method="post" action="/listing/<%=data._id %>?_method=patch" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="title" class="form-label">Edit title:</label>
+                <textarea name="title" id="title" class="form-control" required><%=data.title %></textarea>
+                <div class="invalid-feedback">
+                    Please provide a valid Data.
+                </div>
+                <div class="valid-feedback">
+                    Looks good I wish your details are good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label" required>Edit description:</label>
+                <textarea name="description" id="description" class="form-control"
+                    required><%=data.description %></textarea>
+                <div class="invalid-feedback">
+                    Please provide a valid Data.
+                </div>
+                <div class="valid-feedback">
+                    Looks good I wish your details are good!
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Edit url:</label>
+                <textarea name="image" id="image" class="form-control" required><%=data.image %></textarea>
+                <div class="invalid-feedback">
+                    Please provide a valid Data.
+                </div>
+                <div class="valid-feedback">
+                    Looks good I wish your details are good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Edit price</label>
+                <textarea name="price" id="price" class="form-control" type="number"  required><%=data.price %></textarea>
+                <div class="invalid-feedback">
+                    Please provide a valid Data.
+                </div>
+                <div class="valid-feedback">
+                    Looks good I wish your details are good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Edit location:</label>
+                <textarea name="location" id="location" class="form-control" required><%=data.location %></textarea>
+                <div class="invalid-feedback">
+                    Please provide a valid Data.
+                </div>
+                <div class="valid-feedback">
+                    Looks good I wish your details are good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="country" class="form-label">Edit country:</label>
+                <textarea name="country" id="country" class="form-control" required><%=data.country %></textarea>
+                <div class="invalid-feedback">
+                    Please provide a valid Data.
+                </div>
+                <div class="valid-feedback">
+                    Looks good I wish your details are good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-warning">Submit</button>
+            </div>
+
+        </form>
+    </body>

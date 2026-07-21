@@ -24,6 +24,9 @@ app.use(methodoverride('_method'));
 //serving entire folder
 app.use(express.static(path.join(__dirname, "public")));
 
+//requiring err
+const expresserror= require("./public/err/expresserror.js")
+
 
 
 
@@ -32,7 +35,8 @@ app.use(express.static(path.join(__dirname, "public")));
 const port=5000;
 
 //importing schema from other folder
-const listing = require("./models/listing.js")
+const listing = require("./models/listing.js");
+const { error } = require("console");
 //setting view engine on absolute path
 app.set("views",path.join(__dirname,"/views"));
 app.set("view engine","ejs");
@@ -82,7 +86,7 @@ app.get("/listing",async (req,res)=>{
     
     const data = await listing.find();
     if(data){
-        console.log("Hello done")
+        console.log("Hello website is started");
     res.render("listing/home.ejs",{data});
     }
     else{
@@ -99,11 +103,14 @@ app.get("/listing/add",(req,res)=>{
 app.post("/listing",async (req,res)=>{
     //we can convert html data into object also by giving brackets
     let data = req.body;
-    // console.log(data);
+    // if(!req.body){//required where ever we send request throw hopscoh directly then it does throws error
+    //     throw new Error(400,"Please enter valid data");//but we didn't receve proper information
+    // }
+    console.log(data);
+
     await listing.insertOne(data)
-
-
     res.redirect("/listing");
+    
 })
 
 //update
@@ -118,7 +125,7 @@ app.patch("/listing/:id",async(req,res)=>{
     let {id}=req.params;
     let data=req.body;
     console.log(data);
-    await listing.findByIdAndUpdate(id,data);
+    await listing.findByIdAndUpdate(id,data,{runValidators:true});
     res.redirect(`/listing/${id}`);
 
 })
@@ -134,12 +141,26 @@ app.patch("/listing/:id",async(req,res)=>{
 
 //Read Specific data =>this is written at the end because this route will
 //detect anything incoming as id any route
-//
+////this middle ware was specially created for id length -->commenting it
+app.use("/listing/:id",(req,res,next)=>{
+    // throw new Error ("Accessed denied");
+    console.log("Hi i am middleware I am working for you");
+    let {id}=req.params;
+    console.log(id.length);
+    
+
+    if ((id.length)!=24){
+        // throw new Error("id Length change");
+        res.redirect("/listing");
+    }
+    next();
+})
 app.get("/listing/:id",async(req,res)=>{
     let {id}=req.params;
     let data =await listing.findById(id);
     res.render("listing/read.ejs",{data});
 })
+
 
 //create / adding new data
 //delete
@@ -148,4 +169,17 @@ app.delete("/listing/:id/Delete",async(req,res)=>{
     await listing.findByIdAndDelete(id);
     res.redirect(`/listing`);
 })
+app.all("/{*splat}",(req,res,next)=>{
+    console.log("I am default receiver");
+    throw new expresserror(404,"Sending to default error because you are on wrong path");
+})
 
+
+
+//manually default error handler 4 parameters
+app.use((err,req,res,next)=>{
+    let {status,message}=err;
+    res.send(`hello i am error handler error code ${status},${message},${err.name} suddhare jaa`);
+    // res.send(status,message,err.name);//every error has name err.name we can print it
+    
+})
