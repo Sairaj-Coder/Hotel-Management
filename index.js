@@ -134,11 +134,6 @@ app.patch("/listing/:id",async(req,res)=>{
 
 
 
-
-
-
-
-
 //Read Specific data =>this is written at the end because this route will
 //detect anything incoming as id any route
 ////this middle ware was specially created for id length -->commenting it
@@ -171,7 +166,7 @@ app.delete("/listing/:id/Delete",async(req,res)=>{
 })
 app.all("/{*splat}",(req,res,next)=>{
     console.log("I am default receiver");
-    throw new expresserror(404,"Sending to default error because you are on wrong path");
+    throw new expresserror(404,"Page not found");
 })
 
 
@@ -179,7 +174,7 @@ app.all("/{*splat}",(req,res,next)=>{
 //manually default error handler 4 parameters
 app.use((err,req,res,next)=>{
     let {status,message}=err;
-    res.send(`hello i am error handler error code ${status},${message},${err.name} suddhare jaa`);
+    // res.send(`hello i am error handler error code ${status},${message},${err.name} suddhare jaa`);
     // res.send(status,message,err.name);//every error has name err.name we can print it
-    
+    res.render("./error/error.ejs",{status,message});//going 
 })
