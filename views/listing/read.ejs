@@ -3,11 +3,14 @@
     <body>
         <div class="center">
             <div class="card " style="border-radius: 0%; border-color: white;">
+                <b style="font-weight: bold !important;">
+                    <h4 class="card-title">
+                        <%=data.title%>
+                    </h4>
+                </b>
                 <img src="<%= data.image %>" alt="Place Image" class="img-fluid">
                 <div class="card-body">
-                    <h5 class="card-title">
-                        <%=data.title%>
-                    </h5>
+
                     <p class="card-text">
                         <%= data.description %> <br>
                             &#8377; <%= data.price.toLocaleString("en-IN") %> <br>
@@ -16,13 +19,66 @@
                                         <form method="post" action="/listing/<%=data._id %>/Delete?_method=delete">
                                             <a href="/listing/<%= data._id  %>/edit" class="btn btn-danger">Edit</a>
                                             <button type="submit" class="btn btn-primary">Delete</button>
-
                                         </form>
                     </p>
+                    <form method="post" action="/listing/<%=data._id %>/feedback" class="needs-validation" novalidate>
+
+                        <label for="review_title" class="form-label">Enter Feedback:</label>
+                        <textarea name="title" id="review_title" class="form-control" rows="5" cols="5"></textarea>
+                        <label for="rating">Ratings:</label>
+                        <input type="range" name="rating" id="rating" min="1" max="5" class="form-control">
+                        <br>
+                        <button type="submit" class="btn btn-primary"> Submit </button>
+                    </form>
+                    <div>
+                        <br>
+                        <hr>
+                        <div class="row">
+                            <h6> Reviews </h6>
+                            <% for(it of data.reviews){ %>
+                                <div class="card col-5 ms-3 mb-3 " style="width: 18rem;">
+                                    <div class="card-body">
+                                        <b>
+                                            <h5 class="card-title">
+                                                <%= it.title %>
+                                            </h5>
+                                        </b>
+
+                                      <h6> <p class="card-subtitle mb-2 text-body-secondary">
+                                            <%= it.rating %> /Star
+                                        </p>
+                                       </h6>
+                                        <form method="post"  action="/listing/<%=data._id %>/feedback/<%=it._id%>?_method=delete" class="card-link" >
+                                            <button class="btn btn-sm btn-dark">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
                 </div>
 
 
 
+
+
+
+
             </div>
+
+
+
+
+
+
+
         </div>
     </body>

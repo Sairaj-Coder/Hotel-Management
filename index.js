@@ -40,7 +40,9 @@ const port = 5000;
 
 //importing schema from other folder
 const listing = require("./models/listing.js");
+const review = require("./models/review.js");
 const { error } = require("console");
+
 //setting view engine on absolute path
 app.set("views", path.join(__dirname, "/views"));
 app.set("view engine", "ejs");
@@ -92,11 +94,15 @@ app.get("/listing", async (req, res) => {
     if (data) {
         console.log("Hello website is started");
         res.render("listing/home.ejs", { data });
+        
     }
     else {
         res.send("No data found");
     }
 })
+//deleting specific reviews
+
+
 
 //Create
 app.get("/listing/add", (req, res) => {
@@ -162,31 +168,75 @@ app.patch("/listing/:id", async (req, res) => {
 ////this middle ware was specially created for id length -->commenting it
 app.use("/listing/:id", (req, res, next) => {
     // throw new Error ("Accessed denied");
-    console.log("Hi i am middleware I am working for you");
+    // console.log("Hi i am middleware I am working for you");
     let { id } = req.params;
-    console.log(id.length);
+    // console.log(id.length);
 
 
     if ((id.length) != 24) {
         throw new Error(100,"id Length change");
+        // res.redirect("/listing");
         // next(err);
+        // res.send("Gand masti mat kar");
+    
     }
     next();
 })
 app.get("/listing/:id", async (req, res) => {
     let { id } = req.params;
-    let data = await listing.findById(id);
+    let data = await listing.findById(id).populate("reviews");
+    let data2 = await review.findById(data.reviews);
     res.render("listing/read.ejs", { data });
 })
+
+
+//adding post
+
+app.post("/listing/:id/feedback",async(req,res,next)=>{
+     
+    try{
+        let newreview = await review.insertOne(req.body);  
+        let list = await listing.findById(req.params.id);
+        list.reviews.push(newreview);
+
+        await list.save();
+        // console.log(ins);
+        res.redirect(`/listing/${ req.params.id}`);
+    }
+    catch(err){
+        next(err);
+        console.log(`----------error--------`);
+    }
+   
+
+})
+
 
 
 //create / adding new data
 //delete
 app.delete("/listing/:id/Delete", async (req, res) => {
     let { id } = req.params;
-    await listing.findByIdAndDelete(id);
+    
+    let data=await listing.findByIdAndDelete(id);
+    console.log(data.reviews);
+    let deleteid=data.reviews
+    let reviews = await review.deleteMany({_id:{$in:deleteid}})
+    console.log(reviews);
     res.redirect(`/listing`);
 })
+//deleting specific reviews
+app.delete("/listing/:id/feedback/:reviewid",async(req,res)=>{
+    let {id}=req.params;
+    let {reviewid}=req.params;
+    let ans=await review.deleteMany({_id:reviewid});
+    // console.log(ans, `i am ans 1`);
+    let ans2= await listing.findByIdAndUpdate(id,{$pull:{reviews:reviewid}});
+    // console.log(ans2,`i am ans 2`);
+    res.redirect(`/listing/${id}`);
+})
+
+
 app.all("/{*splat}", (req, res, next) => {
     console.log("I am default receiver");
     throw new expresserror(404, "Page not found");

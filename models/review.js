@@ -2,15 +2,20 @@
 const mongoose = require('mongoose');
 const schema =mongoose.Schema;
 const reviewSchema = new schema({
-    title:string,
+    title:{
+        type:String,
+        require:true,
+    },
     rating:{
         type:Number,
         min:0,
         max:5,
+        require:true,
     },
     created:{
-        type:date,
+        type:Date,
         default:Date.now(),
+        require:true,
     }
 
 })
