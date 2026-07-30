@@ -7,6 +7,11 @@ const ejs = require("ejs");
 //requiring mongoose
 const mongoose = require('mongoose');//download
 const path = require("path");
+//refactoring old code 
+const lists = require("./routes/listing.js");
+//requiring router to restruture code
+const router = express.Router()
+
 
 //requiring ejs-mate
 const ejsmate = require('ejs-mate');
@@ -77,6 +82,13 @@ app.use(express.json());
 
 
 
+
+//refactor code inheritance
+
+app.use("/listing",lists);
+
+
+
 //home or default request==>this show me off
 // app.get("/",(req,res)=>{
 //     res.send("Hello Basic setup is done");
@@ -87,158 +99,171 @@ app.use(express.json());
 
 
 
-//Read all the data
-app.get("/listing", async (req, res) => {
+// //Read all the data
+// app.get("/listing", async (req, res) => {
 
-    const data = await listing.find();
-    if (data) {
-        console.log("Hello website is started");
-        res.render("listing/home.ejs", { data });
+//     const data = await listing.find();
+//     if (data) {
+//         console.log("Hello website is started");
+//         res.render("listing/home.ejs", { data });
         
-    }
-    else {
-        res.send("No data found");
-    }
-})
-//deleting specific reviews
-
-
-
-//Create
-app.get("/listing/add", (req, res) => {
-    // res.send("Request recive");
-    res.render("listing/add.ejs")
-})
-
-app.post("/listing", async (req, res) => {
-    //we can convert html data into object also by giving brackets
-    let data = req.body;
-    // if(!req.body){//required where ever we send request throw hopscoh directly then it does throws error
-    //     throw new Error(400,"Please enter valid data");//but we didn't receve proper information
-    // }
-    // console.log(data);
-//    let resu = joii.listingSchema.validate(req.body);
-//     console.log(resu);
-//     if(resu.error){
-//         throw new expresserror(400,"Data Missing");
 //     }
-    try{
-    await listing.insertOne(data)
-    res.redirect("/listing");
-    }
-    catch(err){
-        throw new expresserror(400,"Data missing")
-    }
-
-})
-
-//update
-app.get("/listing/:id/edit", async (req, res) => {
-
-    let { id } = req.params;
-    let data = await listing.findById(id);
-    res.render("listing/update", { data });
-    console.log(data);
-
-})
-app.patch("/listing/:id", async (req, res) => {
-    // let resu = joii.listingSchema.validate(req.body);
-    // console.log(resu);
-    // if(resu.error){
-    //     throw new expresserror(400,"Data Missing");
-    // }
-    try{
-    let { id } = req.params;
-    let data = req.body;
-    console.log(data);
-    await listing.findByIdAndUpdate(id, data, { runValidators: true });
-    res.redirect(`/listing/${id}`);
-    }
-    catch(err){
-        throw new expresserror(400,"Data missing")
-    }
-})
+//     else {
+//         res.send("No data found");
+//     }
+// })
+// //deleting specific reviews
 
 
 
+// //Create
+// app.get("/listing/add", (req, res) => {
+//     // res.send("Request recive");
+//     res.render("listing/add.ejs")
+// })
+
+// app.post("/listing", async (req, res) => {
+//     //we can convert html data into object also by giving brackets
+//     let data = req.body;
+//     // if(!req.body){//required where ever we send request throw hopscoh directly then it does throws error
+//     //     throw new Error(400,"Please enter valid data");//but we didn't receve proper information
+//     // }
+//     // console.log(data);
+// //    let resu = joii.listingSchema.validate(req.body);
+// //     console.log(resu);
+// //     if(resu.error){
+// //         throw new expresserror(400,"Data Missing");
+// //     }
+//     try{
+//     await listing.insertOne(data)
+//     res.redirect("/listing");
+//     }
+//     catch(err){
+//         throw new expresserror(400,"Data missing")
+//     }
+
+// })
+
+// //update
+// app.get("/listing/:id/edit", async (req, res) => {
+
+//     let { id } = req.params;
+//     let data = await listing.findById(id);
+//     res.render("listing/update", { data });
+//     console.log(data);
+
+// })
+// app.patch("/listing/:id", async (req, res) => {
+//     // let resu = joii.listingSchema.validate(req.body);
+//     // console.log(resu);
+//     // if(resu.error){
+//     //     throw new expresserror(400,"Data Missing");
+//     // }
+//     try{
+//     let { id } = req.params;
+//     let data = req.body;
+//     console.log(data);
+//     await listing.findByIdAndUpdate(id, data, { runValidators: true });
+//     res.redirect(`/listing/${id}`);
+//     }
+//     catch(err){
+//         throw new expresserror(400,"Data missing")
+//     }
+// })
 
 
-//Read Specific data =>this is written at the end because this route will
-//detect anything incoming as id any route
-////this middle ware was specially created for id length -->commenting it
-app.use("/listing/:id", (req, res, next) => {
-    // throw new Error ("Accessed denied");
-    // console.log("Hi i am middleware I am working for you");
-    let { id } = req.params;
-    // console.log(id.length);
 
 
-    if ((id.length) != 24) {
-        throw new Error(100,"id Length change");
-        // res.redirect("/listing");
-        // next(err);
-        // res.send("Gand masti mat kar");
+
+// //Read Specific data =>this is written at the end because this route will
+// //detect anything incoming as id any route
+// ////this middle ware was specially created for id length -->commenting it
+// app.use("/listing/:id", (req, res, next) => {
+//     // throw new Error ("Accessed denied");
+//     // console.log("Hi i am middleware I am working for you");
+//     let { id } = req.params;
+//     // console.log(id.length);
+
+
+//     if ((id.length) != 24) {
+//         throw new Error(100,"id Length change");
+//         // res.redirect("/listing");
+//         // next(err);
+//         // res.send("Gand masti mat kar");
     
-    }
-    next();
-})
-app.get("/listing/:id", async (req, res) => {
-    let { id } = req.params;
-    let data = await listing.findById(id).populate("reviews");
-    let data2 = await review.findById(data.reviews);
-    res.render("listing/read.ejs", { data });
-})
+//     }
+//     next();
+// })
+// app.get("/listing/:id", async (req, res) => {
+//     let { id } = req.params;
+//     let data = await listing.findById(id).populate("reviews");
+//     let data2 = await review.findById(data.reviews);
+//     res.render("listing/read.ejs", { data });
+// })
 
 
-//adding post
+// //adding post
 
-app.post("/listing/:id/feedback",async(req,res,next)=>{
+// app.post("/listing/:id/feedback",async(req,res,next)=>{
      
-    try{
-        let newreview = await review.insertOne(req.body);  
-        let list = await listing.findById(req.params.id);
-        list.reviews.push(newreview);
+//     try{
+//         let newreview = await review.insertOne(req.body);  
+//         let list = await listing.findById(req.params.id);
+//         list.reviews.push(newreview);
 
-        await list.save();
-        // console.log(ins);
-        res.redirect(`/listing/${ req.params.id}`);
-    }
-    catch(err){
-        next(err);
-        console.log(`----------error--------`);
-    }
+//         await list.save();
+//         // console.log(ins);
+//         res.redirect(`/listing/${ req.params.id}`);
+//     }
+//     catch(err){
+//         next(err);
+//         console.log(`----------error--------`);
+//     }
    
 
-})
+// })
 
 
 
-//create / adding new data
-//delete
-app.delete("/listing/:id/Delete", async (req, res) => {
-    let { id } = req.params;
+// //create / adding new data
+// //delete
+// app.delete("/listing/:id/Delete", async (req, res) => {
+//     let { id } = req.params;
     
-    let data=await listing.findByIdAndDelete(id);
-    console.log(data.reviews);
-    let deleteid=data.reviews
-    let reviews = await review.deleteMany({_id:{$in:deleteid}})
-    console.log(reviews);
-    res.redirect(`/listing`);
-})
-//deleting specific reviews
-app.delete("/listing/:id/feedback/:reviewid",async(req,res)=>{
-    let {id}=req.params;
-    let {reviewid}=req.params;
-    let ans=await review.deleteMany({_id:reviewid});
-    // console.log(ans, `i am ans 1`);
-    let ans2= await listing.findByIdAndUpdate(id,{$pull:{reviews:reviewid}});
-    // console.log(ans2,`i am ans 2`);
-    res.redirect(`/listing/${id}`);
-})
+//     let data=await listing.findByIdAndDelete(id);
+//     console.log(data.reviews);
+//     let deleteid=data.reviews
+//     let reviews = await review.deleteMany({_id:{$in:deleteid}})
+//     console.log(reviews);
+//     res.redirect(`/listing`);
+// })
+// //deleting specific reviews
+// app.delete("/listing/:id/feedback/:reviewid",async(req,res)=>{
+//     let {id}=req.params;
+//     let {reviewid}=req.params;
+//     let ans=await review.deleteMany({_id:reviewid});
+//     // console.log(ans, `i am ans 1`);
+//     let ans2= await listing.findByIdAndUpdate(id,{$pull:{reviews:reviewid}});
+//     // console.log(ans2,`i am ans 2`);
+//     res.redirect(`/listing/${id}`);
+// })
+
+// const cookieParser = require('cookie-parser')
+// app.use(cookieParser())
+// app.get("/cookies",(req,res)=>{
+//     res.cookie("greet","welcome");
+//     let name =req.cookies;//cookies send from browser
+//     console.log("cookies send");
+//     res.send("Cookies are send");
+// })
+
+
+
 
 
 app.all("/{*splat}", (req, res, next) => {
     console.log("I am default receiver");
+    console.log(req.cookies);//cookies will not be available until we use middleware
     throw new expresserror(404, "Page not found");
 })
 
