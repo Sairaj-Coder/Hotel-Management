@@ -14,9 +14,9 @@ app.use(cookieParser())
 
 //passport download all passport,passport local,passport local mongose
 
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const user = require("./models/user.js");
+const passport = require("passport");//requiring library of passport
+const LocalStrategy = require("passport-local");//simple login through username and password
+const user = require("./models/user.js");//requiring model 
 
 //session should be declare before
 //express-session
@@ -41,6 +41,7 @@ const flash = require('connect-flash');
 app.use(flash());//write before dividation
 //refactoring old code 
 
+/////////////-------------------------authentication-----------------///////////////////
 //we have to use passport after session and cookies 
 
 app.use(passport.initialize());
@@ -52,7 +53,16 @@ passport.use(new LocalStrategy(user.authenticate()));
 // use static serialize and deserialize of model for passport session support
 passport.serializeUser(user.serializeUser());
 passport.deserializeUser(user.deserializeUser());
+/////////////-------------------------authentication-----------------///////////////////
 
+app.get("/demouser",async(req,res)=>{
+    let fakeuser = new user({
+        email:"sairajshirole2@gmail.com",
+        username:"Sairaj",
+    });
+    let data = await user.register(fakeuser,"password");
+    console.log(data);
+})
 //requiring router to restruture code
 const router = express.Router()
 const lists = require("./routes/listing.js");
@@ -119,7 +129,10 @@ app.listen(port, () => {
 
 
 
-
+app.use((req, res, next) => {
+    res.locals.suceessmsg = req.flash("success");
+    next();
+});
 //refactor code inheritance
 
 app.use("/listing",lists);
