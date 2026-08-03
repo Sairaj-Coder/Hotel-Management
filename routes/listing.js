@@ -4,14 +4,28 @@ const listing = require("../models/listing");
 const review = require("../models/review");
 const expresserror = require("../public/err/expresserror");
 const joii = require("../schema");
+//using flash
+const flash = require('connect-flash');
+router.use(flash());
+//middleware for another routes
+//middle ware
+
+
+
 //Read all the data
+router.use((req,res,next)=>{
+    res.locals.suceessmsg=req.flash("success");
+    res.locals.errormsg=req.flash("error");
+    
+    next();
+})
 router.get("/", async (req, res) => {
 
     const data = await listing.find();
     if (data) {
         console.log("Hello website is started");
         res.render("listing/home.ejs", { data });
-        
+        // res.render("listing/home.ejs", { data ,suceessmsg:req.flash("success")});
     }
     else {
         res.send("No data found");
@@ -41,9 +55,11 @@ router.post("/", async (req, res) => {
 //     }
     try{
     await listing.insertOne(data)
+    req.flash("success","Place Added Successfully");
     res.redirect("/listing");
     }
     catch(err){
+        console.log(err);
         throw new expresserror(400,"Data missing")
     }
 
@@ -54,8 +70,9 @@ router.get("/:id/edit", async (req, res) => {
 
     let { id } = req.params;
     let data = await listing.findById(id);
+    
     res.render("listing/update", { data });
-    console.log(data);
+    
 
 })
 router.patch("/:id", async (req, res) => {
@@ -67,8 +84,9 @@ router.patch("/:id", async (req, res) => {
     try{
     let { id } = req.params;
     let data = req.body;
-    console.log(data);
+    // console.log(data);
     await listing.findByIdAndUpdate(id, data, { runValidators: true });
+     req.flash("success","Post updated Successfully");   
     res.redirect(`/listing/${id}`);
     }
     catch(err){
@@ -83,27 +101,39 @@ router.patch("/:id", async (req, res) => {
 //Read Specific data =>this is written at the end because this route will
 //detect anything incoming as id any route
 ////this middle ware was specially created for id length -->commenting it
-router.use("/:id", (req, res, next) => {
-    // throw new Error ("Accessed denied");
-    // console.log("Hi i am middleware I am working for you");
-    let { id } = req.params;
-    // console.log(id.length);
+// router.use("/:id",async (req, res, next) => {
+//     // throw new Error ("Accessed denied");
+//     // console.log("Hi i am middleware I am working for you");
+//     let { id } = req.params;
+//     // console.log(id.length);
+//     let data = await listing.findById(id)
+//     // if(!data){
+//     //     res.redirect("/listing");
+//     // }
 
-
-    if ((id.length) != 24) {
-        throw new Error(100,"id Length change");
-        // res.redirect("/listing");
-        // next(err);
-        // res.send("Gand masti mat kar");
+//      if ((id.length) != 24) {
+//         throw new Error(100,"id Length change");
+//         // res.redirect("/listing");
+//         // next(err);
+//         // res.send("Gand masti mat kar");
     
-    }
-    next();
-})
+//     }
+//     next();
+// })
+
 router.get("/:id", async (req, res) => {
     let { id } = req.params;
     let data = await listing.findById(id).populate("reviews");
+    if(!data){
+         req.flash("error","Post Not found"); 
+        res.redirect("/listing");
+    }
+    else{
     let data2 = await review.findById(data.reviews);
+    console.log(data)
+    console.log("hello")
     res.render("listing/read.ejs", { data });
+    }
 })
 
 
@@ -118,6 +148,7 @@ router.post("/:id/feedback",async(req,res,next)=>{
 
         await list.save();
         // console.log(ins);
+        req.flash("success","Feed added Successfully");  
         res.redirect(`/listing/${ req.params.id}`);
     }
     catch(err){
@@ -139,7 +170,8 @@ router.delete("/:id/Delete", async (req, res) => {
     console.log(data.reviews);
     let deleteid=data.reviews
     let reviews = await review.deleteMany({_id:{$in:deleteid}})
-    console.log(reviews);
+    // console.log(reviews);
+   req.flash("success","Post Deleted Successfully");  
     res.redirect(`/listing`);
 })
 //deleting specific reviews
@@ -150,6 +182,7 @@ router.delete("/:id/feedback/:reviewid",async(req,res)=>{
     // console.log(ans, `i am ans 1`);
     let ans2= await listing.findByIdAndUpdate(id,{$pull:{reviews:reviewid}});
     // console.log(ans2,`i am ans 2`);
+    req.flash("success","Review Deleted Successfully");  
     res.redirect(`/listing/${id}`);
 })
 

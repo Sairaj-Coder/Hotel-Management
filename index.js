@@ -7,11 +7,55 @@ const ejs = require("ejs");
 //requiring mongoose
 const mongoose = require('mongoose');//download
 const path = require("path");
+//cookie parser
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
+
+
+//passport download all passport,passport local,passport local mongose
+
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const user = require("./models/user.js");
+
+//session should be declare before
+//express-session
+const session= require("express-session")
+app.use(session({
+    secret:"secretcode",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        expires:Date.now()+7*24*60*60*1000,//this is no longer use
+        maxAge:7*24*60*60*1000,
+    },
+}))
+
+//parsing data ==>middle where  
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+
+//requiring flash to display messages
+const flash = require('connect-flash');
+app.use(flash());//write before dividation
 //refactoring old code 
-const lists = require("./routes/listing.js");
+
+//we have to use passport after session and cookies 
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// use static authenticate method of model in LocalStrategy
+passport.use(new LocalStrategy(user.authenticate()));
+
+// use static serialize and deserialize of model for passport session support
+passport.serializeUser(user.serializeUser());
+passport.deserializeUser(user.deserializeUser());
+
 //requiring router to restruture code
 const router = express.Router()
-
+const lists = require("./routes/listing.js");
 
 //requiring ejs-mate
 const ejsmate = require('ejs-mate');
@@ -32,12 +76,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //requiring err
 const expresserror = require("./public/err/expresserror.js")
 
-
 //requiring joi
 const joii = require("./schema.js")
-
-
-
 
 //port is set
 
@@ -74,9 +114,6 @@ app.listen(port, () => {
 })
 
 
-//parsing data ==>middle where  
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 
 

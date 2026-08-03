@@ -1,22 +1,25 @@
 <% layout("/layouts/boilerplate") %>
 
-    <body >
-        <div class="frontpage">
-        <% for(datas of data){ %>
-            <a href="/listing/<%= datas._id  %>"  class="anchor">
-            <div class="card" style="width: 18rem;">
-                <img src="<%= datas.image %>" class="card-img-top" alt="Hotel Image">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <%=datas.title%>
-                    </h5>
-                    <p class="card-text">Price: &#x20B9;<%= datas.price.toLocaleString("en-IN") %>/Night
-                    </p>
-                    
-                </div>
+    <body>
 
-            </div>
-            </a>
-            <% } %>
-        </div>    
+        <div class="frontpage">
+
+
+            <% for(datas of data){ %>
+                <a href="/listing/<%= datas._id  %>" class="anchor">
+                    <div class="card" style="width: 18rem;">
+                        <img src="<%= datas.image %>" class="card-img-top" alt="Hotel Image">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%=datas.title%>
+                            </h5>
+                            <p class="card-text">Price: &#x20B9;<%= datas.price.toLocaleString("en-IN") %>/Night
+                            </p>
+
+                        </div>
+
+                    </div>
+                </a>
+                <% } %>
+        </div>
     </body>

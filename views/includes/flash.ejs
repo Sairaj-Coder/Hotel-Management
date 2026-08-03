@@ -1,0 +1,16 @@
+<% if(suceessmsg && suceessmsg.length) {%>
+    <div class="alert alert-success alert-dismissible" style="margin-top: 2% !important;" role="alert">
+        <p>
+            <%=suceessmsg %>
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <%}%>
+<% if(errormsg && errormsg.length) {%>
+    <div class="alert alert-success alert-dismissible" style="margin-top: 2% !important;" role="alert">
+        <p>
+            <%=errormsg %>
+        </p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <%}%>
